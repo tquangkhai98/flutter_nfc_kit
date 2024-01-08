@@ -318,6 +318,9 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 thread {
                     try {
                         val tag = tagTech as MifareClassic
+                        if (!tag.isConnected) {
+                            tag.connect()
+                        }
                         // key A takes precedence if present
                         val success = if (keyA != null) {
                             val (key, _) = canonicalizeData(keyA)
@@ -351,7 +354,10 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 }
                 thread {
                     try {
-                        switchTechnology(tagTech, ndefTechnology)
+                        if (!tagTech.isConnected) {
+                            tagTech.connect()
+                        }
+                        //switchTechnology(tagTech, ndefTechnology)
                         tagTech.readBlock(index, result)
                     } catch (ex: IOException) {
                         Log.e(TAG, "Read block error", ex)
@@ -375,7 +381,10 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 thread {
                     try {
                         val tag = tagTech as MifareClassic
-                        switchTechnology(tagTech, ndefTechnology)
+                        if (!tagTech.isConnected) {
+                            tagTech.connect()
+                        }
+                        //switchTechnology(tagTech, ndefTechnology)
                         result.success(tag.readSector(index))
                     } catch (ex: IOException) {
                         Log.e(TAG, "Read sector error", ex)

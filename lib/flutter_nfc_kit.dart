@@ -449,7 +449,7 @@ class FlutterNfcKit {
   /// Returns whether authentication succeeds.
   static Future<bool> authenticateSector<T>(int index,
       {T? keyA, T? keyB}) async {
-    assert(T is String || T is Uint8List);
+    //assert(T is String || T is Uint8List);
     return await _channel.invokeMethod(
         'authenticateSector', {'index': index, 'keyA': keyA, 'keyB': keyB});
   }
