@@ -416,8 +416,13 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 }
                 thread {
                     try {
-                        switchTechnology(tagTech, ndefTechnology)
-                        tagTech.writeBlock(index, bytes, result)
+                        //switchTechnology(tagTech, ndefTechnology)
+                        val tag = tagTech as MifareClassic
+                        if (!tagTech.isConnected) {
+                            tagTech.connect()
+                        }
+                        tag.writeBlock(index, bytes, result)
+                        //tagTech.writeBlock(index, bytes, result)
                     } catch (ex: IOException) {
                         Log.e(TAG, "Read block error", ex)
                         result.error("500", "Communication error", ex.localizedMessage)
