@@ -336,6 +336,9 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     } catch (ex: IOException) {
                         Log.e(TAG, "Authenticate block error", ex)
                         result.error("500", "Authentication error", ex.localizedMessage)
+                    } catch (ex: SecurityException) {
+                        Log.e(TAG, "Authenticate block error", ex)
+                        result.error("503", "Tag already removed", ex.localizedMessage)
                     }
                 }
             }
@@ -362,6 +365,9 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     } catch (ex: IOException) {
                         Log.e(TAG, "Read block error", ex)
                         result.error("500", "Communication error", ex.localizedMessage)
+                    } catch (ex: SecurityException) {
+                        Log.e(TAG, "Read block error", ex)
+                        result.error("503", "Tag already removed", ex.localizedMessage)
                     }
                 }
             }
@@ -388,7 +394,11 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                         result.success(tagTech.readSector(index))
                     } catch (ex: IOException) {
                         Log.e(TAG, "Read sector error", ex)
-                        result.error("500", "Communication error", ex.localizedMessage)                    }
+                        result.error("500", "Communication error", ex.localizedMessage)                    
+                    } catch (ex: SecurityException) {
+                        Log.e(TAG, "Read sector error", ex)
+                        result.error("503", "Tag already removed", ex.localizedMessage)
+                    }
                 }
             }
 
@@ -424,8 +434,11 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                         tag.writeBlock(index, bytes, result)
                         //tagTech.writeBlock(index, bytes, result)
                     } catch (ex: IOException) {
-                        Log.e(TAG, "Read block error", ex)
+                        Log.e(TAG, "Write block error", ex)
                         result.error("500", "Communication error", ex.localizedMessage)
+                    }   catch (ex: SecurityException) {
+                        Log.e(TAG, "Write block error", ex)
+                        result.error("503", "Tag already removed", ex.localizedMessage)
                     }
                 }
             }
