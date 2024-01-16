@@ -309,7 +309,7 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                     return
                 }
                 val index = call.argument<Int>("index")!!
-                if (!(0 < index && index < mifareInfo!!.sectorCount!!)) {
+                if (!(0 <= index && index < mifareInfo!!.sectorCount!!)) {
                     result.error("400", "Invalid sector index $index", null)
                     return
                 }
@@ -317,20 +317,25 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 val keyB = call.argument<Any>("keyB")
                 thread {
                     try {
+                        if (keyA == null && keyB == null  ) {
+                            result.error("400", "No keys provided", null)
+                            return@thread
+                        }
                         val tag = tagTech as MifareClassic
                         if (!tag.isConnected) {
                             tag.connect()
                         }
+                        var success = false
                         // key A takes precedence if present
-                        val success = if (keyA != null) {
+                        if (keyA != null) {
+                            Log.d(TAG, "try authen sector $index with key A")
                             val (key, _) = canonicalizeData(keyA)
-                            tag.authenticateSectorWithKeyA(index, key)
-                        } else if (keyB != null) {
+                            success = tag.authenticateSectorWithKeyA(index, key)
+                        }
+                        if (keyB != null && !success) {
+                            Log.d(TAG, "try authen sector $index with key B")
                             val (key, _) = canonicalizeData(keyB)
-                            tag.authenticateSectorWithKeyB(index, key)
-                        } else {
-                            result.error("400", "No keys provided", null)
-                            return@thread
+                            success = tag.authenticateSectorWithKeyB(index, key)
                         }
                         result.success(success)
                     } catch (ex: IOException) {
