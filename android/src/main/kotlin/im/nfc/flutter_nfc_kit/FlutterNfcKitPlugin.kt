@@ -396,7 +396,7 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                             tagTech.connect()
                         }
                         //switchTechnology(tagTech, ndefTechnology)
-                        result.success(tagTech.readSector(index))
+                        result.success(tag.readSector(index))
                     } catch (ex: IOException) {
                         Log.e(TAG, "Read sector error", ex)
                         result.error("500", "Communication error", ex.localizedMessage)                    
