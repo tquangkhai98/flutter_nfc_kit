@@ -5,8 +5,17 @@ import android.nfc.FormatException
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
-import android.nfc.NfcAdapter.*
-import android.nfc.tech.*
+import android.nfc.NfcAdapter.getDefaultAdapter
+import android.nfc.TagLostException
+import android.nfc.tech.IsoDep
+import android.nfc.tech.MifareClassic
+import android.nfc.tech.MifareUltralight
+import android.nfc.tech.Ndef
+import android.nfc.tech.NfcA
+import android.nfc.tech.NfcB
+import android.nfc.tech.NfcF
+import android.nfc.tech.NfcV
+import android.nfc.tech.TagTechnology
 import android.os.Handler
 import android.os.Looper
 import im.nfc.flutter_nfc_kit.ByteUtils.canonicalizeData
@@ -28,7 +37,8 @@ import org.json.JSONObject
 import java.io.IOException
 import java.lang.ref.WeakReference
 import java.lang.reflect.InvocationTargetException
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
@@ -342,6 +352,9 @@ class FlutterNfcKitPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                         Log.e(TAG, "Authenticate block error", ex)
                         result.error("500", "Authentication error", ex.localizedMessage)
                     } catch (ex: SecurityException) {
+                        Log.e(TAG, "Authenticate block error", ex)
+                        result.error("503", "Tag already removed", ex.localizedMessage)
+                    } catch (ex: TagLostException) {
                         Log.e(TAG, "Authenticate block error", ex)
                         result.error("503", "Tag already removed", ex.localizedMessage)
                     }
