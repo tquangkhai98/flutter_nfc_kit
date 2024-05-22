@@ -17,7 +17,7 @@ android {
 
     namespace 'im.nfc.flutter_nfc_kit'
 
-    compileSdkVersion 33
+    compileSdkVersion 34
     
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
